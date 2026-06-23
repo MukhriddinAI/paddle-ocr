@@ -35,13 +35,29 @@ PaddleOCR/
 
 ## O'rnatish
 
-Loyiha bilan birga `paddle_env` virtual muhiti keladi. Kerakli
-kutubxonalar:
+Repo faqat **kodni** o'z ichiga oladi — virtual muhit (`paddle_env`) repoga
+kirmaydi (`.gitignore`), shuning uchun clone qilgandan keyin uni o'zingiz
+yaratasiz. Python 3.8–3.12 talab qilinadi.
 
 ```bash
+# 1. Reponi clone qiling
+git clone https://github.com/MukhriddinAI/paddle-ocr.git
+cd paddle-ocr
+
+# 2. Virtual muhit yarating
+python -m venv paddle_env
+
+# 3. Kerakli kutubxonalarni o'rnating
+#    Windows:
 paddle_env/Scripts/python.exe -m pip install -r requirements.txt
+#    Linux / macOS:
+#    paddle_env/bin/python -m pip install -r requirements.txt
 ```
 
+> **Birinchi ishga tushirishda** PaddleOCR aniqlash/tanish modellarini
+> avtomatik internetdan yuklab oladi (bir necha 100 MB) — shuning uchun
+> birinchi marta internet ulanishi kerak. Keyin offline ishlaydi.
+>
 > GPU uchun `paddlepaddle` o'rniga `paddlepaddle-gpu` o'rnating va
 > `--gpu` bayrog'ini ishlating.
 
