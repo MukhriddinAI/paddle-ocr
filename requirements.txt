@@ -1,0 +1,9 @@
+# PaddleOCR cheklardan ma'lumot ajratib oluvchi loyiha uchun kutubxonalar
+# CPU versiyasi. GPU uchun paddlepaddle o'rniga paddlepaddle-gpu o'rnating.
+
+paddlepaddle>=3.0.0
+paddleocr>=3.0.0
+opencv-python-headless>=4.8.0
+numpy>=1.24.0
+Pillow>=10.0.0
+python-dateutil>=2.8.2

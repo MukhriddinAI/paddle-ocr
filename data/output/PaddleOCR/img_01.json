@@ -1,0 +1,20 @@
+{
+  "merchant_name": "BEMED (SP) SDN. BHD.",
+  "date": "2017-04-15",
+  "total_amount": 635.0,
+  "items": [
+    {
+      "description": "PRISTIN OMEGA-3 FISH OIL 2X150S(VIP)",
+      "quantity": 1.0,
+      "unit_price": 300.0,
+      "price": 300.0
+    },
+    {
+      "description": "ALPHA LIPID LIFE LINE 450MG 450G",
+      "quantity": 2.0,
+      "unit_price": 105.0,
+      "price": 330.0
+    }
+  ],
+  "source_file": "img_01.jpg"
+}

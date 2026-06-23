@@ -1,0 +1,155 @@
+{
+  "summary": {
+    "files": 9,
+    "avg_ocr_confidence_pct": 95.1,
+    "field_completeness_pct": 91.7,
+    "fields_extracted": 33,
+    "fields_total": 36
+  },
+  "per_file": [
+    {
+      "file": "img_01.jpg",
+      "ocr_confidence": 97.4,
+      "blocks": 56,
+      "fields_extracted": 4,
+      "field_status": {
+        "merchant_name": true,
+        "date": true,
+        "total_amount": true,
+        "items": true
+      },
+      "merchant_name": "BEMED (SP) SDN. BHD.",
+      "date": "2017-04-15",
+      "total_amount": 635.0,
+      "items_count": 2
+    },
+    {
+      "file": "img_02.jpg",
+      "ocr_confidence": 98.9,
+      "blocks": 61,
+      "fields_extracted": 4,
+      "field_status": {
+        "merchant_name": true,
+        "date": true,
+        "total_amount": true,
+        "items": true
+      },
+      "merchant_name": "TONYMOLY VIVA CITY",
+      "date": "2018-03-29",
+      "total_amount": 48.95,
+      "items_count": 1
+    },
+    {
+      "file": "img_03.jpg",
+      "ocr_confidence": 98.3,
+      "blocks": 56,
+      "fields_extracted": 4,
+      "field_status": {
+        "merchant_name": true,
+        "date": true,
+        "total_amount": true,
+        "items": true
+      },
+      "merchant_name": "MR. D.I.Y. (M) SDN BHD",
+      "date": "2018-04-19",
+      "total_amount": 34.8,
+      "items_count": 5
+    },
+    {
+      "file": "img_04.jpg",
+      "ocr_confidence": 94.9,
+      "blocks": 44,
+      "fields_extracted": 3,
+      "field_status": {
+        "merchant_name": true,
+        "date": false,
+        "total_amount": true,
+        "items": true
+      },
+      "merchant_name": "MR. D.I.Y. (M) SDN BHD",
+      "date": null,
+      "total_amount": 5.0,
+      "items_count": 2
+    },
+    {
+      "file": "img_05.jpg",
+      "ocr_confidence": 98.8,
+      "blocks": 48,
+      "fields_extracted": 4,
+      "field_status": {
+        "merchant_name": true,
+        "date": true,
+        "total_amount": true,
+        "items": true
+      },
+      "merchant_name": "TONYMOLY VIVA CITY",
+      "date": "2018-03-29",
+      "total_amount": 39.9,
+      "items_count": 1
+    },
+    {
+      "file": "img_06.jpg",
+      "ocr_confidence": 96.9,
+      "blocks": 67,
+      "fields_extracted": 4,
+      "field_status": {
+        "merchant_name": true,
+        "date": true,
+        "total_amount": true,
+        "items": true
+      },
+      "merchant_name": "TONYMOLY VIVA CITY",
+      "date": "2018-03-29",
+      "total_amount": 100.6,
+      "items_count": 2
+    },
+    {
+      "file": "img_07.jpg",
+      "ocr_confidence": 92.9,
+      "blocks": 69,
+      "fields_extracted": 4,
+      "field_status": {
+        "merchant_name": true,
+        "date": true,
+        "total_amount": true,
+        "items": true
+      },
+      "merchant_name": "Oc9o1",
+      "date": "2013-03-15",
+      "total_amount": 119.7,
+      "items_count": 4
+    },
+    {
+      "file": "img_08.jpg",
+      "ocr_confidence": 88.2,
+      "blocks": 47,
+      "fields_extracted": 3,
+      "field_status": {
+        "merchant_name": true,
+        "date": true,
+        "total_amount": true,
+        "items": false
+      },
+      "merchant_name": "Anzel Advertising (M) Sdn bhd (759705-H)",
+      "date": "2018-03-21",
+      "total_amount": 7.42,
+      "items_count": 0
+    },
+    {
+      "file": "img_09.jpg",
+      "ocr_confidence": 88.3,
+      "blocks": 53,
+      "fields_extracted": 3,
+      "field_status": {
+        "merchant_name": true,
+        "date": true,
+        "total_amount": true,
+        "items": false
+      },
+      "merchant_name": "Anzel Advertising (M) Sdn bhd (759785-H)",
+      "date": "2018-03-27",
+      "total_amount": 8.5,
+      "items_count": 0
+    }
+  ]
+}

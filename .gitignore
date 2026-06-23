@@ -1,0 +1,23 @@
+# Virtual muhit
+paddle_env/
+venv/
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# PaddleOCR yuklab oladigan modellar
+.paddleocr/
+*.tar
+
+# Chiqish natijalari (xohlasangiz saqlang)
+# data/output/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
