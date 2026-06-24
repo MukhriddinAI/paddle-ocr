@@ -19,7 +19,7 @@ oluvchi loyiha:
 ```
 PaddleOCR/
 ├── main.py                 # CLI kirish nuqtasi (rasm/papka -> JSON)
-├── evaluate.py             # aniqlik hisoboti (confidence + maydon to'liqligi)
+├── evaluate.py             # ground-truth bilan solishtirish (maydon aniqligi)
 ├── requirements.txt
 ├── src/
 │   ├── ocr_engine.py       # PaddleOCR wrapper (2.x va 3.x API) + qator tiklash
@@ -29,8 +29,9 @@ PaddleOCR/
 │   └── config.py           # OCR tili va qator guruhlash sozlamalari
 └── data/
     ├── input/              # baholash to'plami (img_01..img_09)
-    ├── test_input/         # erkin sinov rasmlari
-    └── output/PaddleOCR/   # natija JSON fayllar
+    ├── test_input/         # erkin sinov rasmlari (photo_2026-...)
+    ├── ground_truth.json   # qo'lda belgilangan to'g'ri javoblar (baholash uchun)
+    └── output/             # natija JSON fayllar + _gt_report.json
 ```
 
 ## O'rnatish
@@ -64,29 +65,29 @@ paddle_env/Scripts/python.exe -m pip install -r requirements.txt
 ## Ishlatish
 
 ```bash
-# Standart: data/test_input -> data/output/PaddleOCR
-paddle_env/Scripts/python.exe main.py
+# Standart: data/input -> data/output
+paddle_env/Scripts/python main.py
 
-# Baholash to'plamini qayta ishlash: data/input -> data/output/PaddleOCR
-paddle_env/Scripts/python.exe main.py -i data/input -o data/output/PaddleOCR
+# Boshqa papkani qayta ishlash (masalan erkin sinov rasmlari)
+paddle_env/Scripts/python main.py -i data/test_input -o data/output
 
 # Bitta rasm (natija ekranga chiqadi va papkaga ham saqlanadi)
-paddle_env/Scripts/python.exe main.py -i data/input/img_01.jpg
+paddle_env/Scripts/python main.py -i data/input/img_01.jpg
 
 # Natijaga xom OCR matnini ham qo'shish (debug uchun foydali)
-paddle_env/Scripts/python.exe main.py --raw
+paddle_env/Scripts/python main.py --raw
 
 # Parser/OCR tili (en yoki ru)
-paddle_env/Scripts/python.exe main.py -l en
+paddle_env/Scripts/python main.py -l en
 ```
 
-CLI bayroqlari: `-i/--input` (default `data/test_input`),
-`-o/--output` (default `data/output/PaddleOCR`), `-l/--lang` (default `en`),
+CLI bayroqlari: `-i/--input` (default `data/input`),
+`-o/--output` (default `data/output`), `-l/--lang` (default `en`),
 `--raw`, `--gpu`.
 
 ## Chiqish (output) namunasi
 
-`data/output/PaddleOCR/img_01.json`:
+`data/output/img_01.json`:
 
 ```json
 {
@@ -136,16 +137,43 @@ CLI bayroqlari: `-i/--input` (default `data/test_input`),
 
 ## Aniqlikni baholash
 
-`evaluate.py` `data/input` rasmlarini qayta o'qib, ikki o'lchov beradi:
-OCR ishonch darajasi va 4 ta maydonning to'ldirilish foizi. Natija
-`data/output/PaddleOCR/_accuracy_report.json` ga saqlanadi.
+`evaluate.py` pipeline natijalarini (`data/output/*.json`) qo'lda belgilangan
+`data/ground_truth.json` bilan solishtiradi va har maydon uchun aniqlik foizini
+chiqaradi.
 
 ```bash
-paddle_env/Scripts/python.exe evaluate.py
+# Natijalarni baholash (ekranga jadval + umumiy natija)
+# --output_dir default `data/output` — main.py ham aynan shu yerga yozadi
+paddle_env/Scripts/python evaluate.py data/ground_truth.json
+
+# Hisobotni faylga ham saqlash (data/output/_gt_report.json)
+paddle_env/Scripts/python evaluate.py data/ground_truth.json --save_report
+
+# Qat'iy rejim: total ±0% tolerans, merchant nomi aniq mos kelishi shart
+paddle_env/Scripts/python evaluate.py data/ground_truth.json --strict
 ```
 
-Joriy natija: OCR ishonchi **95.1%**, maydon to'liqligi **91.7%**
-(`total_amount` 100%, `date` 89%). Batafsil tahlil — [`RESULTS.md`](RESULTS.md).
+Baholash mezonlari: **merchant** — so'zlarning ≥50% mosligi (yumshoq rejim),
+**date** — ISO `YYYY-MM-DD` ga normallashtirib solishtirish, **total** — ±5%
+tolerans (yumshoq), **items** — GT mahsulotlarining necha foizi natijada
+topilgani.
+
+Joriy baholash to'plamida (`data/ground_truth.json`, 10 fayl):
+
+```
+══════════════════════════════════════════════════════════════════════════════════════════
+  UMUMIY NATIJA  [YUMSHOQ (±5% tolerans)]   (10 fayl)
+══════════════════════════════════════════════════════════════════════════════════════════
+  merchant_name : 10/10  (100%)
+  date          : 10/10  (100%)
+  total_amount  : 9/10   (90%)
+  items (avg)   : 80%
+
+  Umumiy aniqlik (merchant+date+total) : 96.7%
+  AC-2 (date≥70% va total≥70%)         : ✅ O'TDI
+```
+
+Batafsil tahlil va xatolar tahlili — [`RESULTS.md`](RESULTS.md).
 
 ## AI shaffofligi
 

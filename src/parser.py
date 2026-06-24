@@ -1,5 +1,5 @@
 """
-Lokal qoidaviy parser — GLM-OCR xom matnidan strukturalangan
+Lokal qoidaviy parser — PaddleOCR xom matnidan strukturalangan
 maydonlarni (merchant_name, date, total_amount, items) ajratadi.
 
 Bu regex + heuristikaga asoslangan "best-effort" parser. U turli chek

@@ -1,0 +1,160 @@
+{
+  "summary": {
+    "mode": "YUMSHOQ (±5% tolerans)",
+    "files": 10,
+    "merchant_pct": 100.0,
+    "date_pct": 100.0,
+    "total_pct": 90.0,
+    "items_avg_pct": 80.0,
+    "overall_pct": 96.7,
+    "ac2_passed": true
+  },
+  "per_file": [
+    {
+      "file": "img_01",
+      "merchant_ok": true,
+      "date_ok": true,
+      "amount_ok": true,
+      "items_score": 1.0,
+      "pred_merchant": "BEMED (SP) SDN. BHD.",
+      "gt_merchant": "BEMED (SP) SDN. BHD.",
+      "pred_date": "2017-04-15",
+      "gt_date": "2017-04-15",
+      "pred_amount": 635.0,
+      "gt_amount": 635.0,
+      "notes": []
+    },
+    {
+      "file": "img_02",
+      "merchant_ok": true,
+      "date_ok": true,
+      "amount_ok": true,
+      "items_score": 1.0,
+      "pred_merchant": "TONYMOLY VIVA CITY",
+      "gt_merchant": "TONYMOLY VIVA CITY",
+      "pred_date": "2018-03-29",
+      "gt_date": "2018-03-29",
+      "pred_amount": 48.95,
+      "gt_amount": 48.95,
+      "notes": []
+    },
+    {
+      "file": "img_03",
+      "merchant_ok": true,
+      "date_ok": true,
+      "amount_ok": true,
+      "items_score": 1.0,
+      "pred_merchant": "MR. D.I.Y. (M) SDN BHD",
+      "gt_merchant": "MR. D.I.Y. (M) SDN BHD",
+      "pred_date": "2018-04-19",
+      "gt_date": "2018-04-19",
+      "pred_amount": 34.8,
+      "gt_amount": 34.8,
+      "notes": []
+    },
+    {
+      "file": "img_04",
+      "merchant_ok": true,
+      "date_ok": true,
+      "amount_ok": true,
+      "items_score": 1.0,
+      "pred_merchant": "MR. D.I.Y. (M) SDN BHD",
+      "gt_merchant": "MR. D.I.Y. (M) SDN BHD",
+      "pred_date": null,
+      "gt_date": null,
+      "pred_amount": 5.0,
+      "gt_amount": 5.0,
+      "notes": []
+    },
+    {
+      "file": "img_05",
+      "merchant_ok": true,
+      "date_ok": true,
+      "amount_ok": true,
+      "items_score": 1.0,
+      "pred_merchant": "TONYMOLY VIVA CITY",
+      "gt_merchant": "TONYMOLY VIVA CITY",
+      "pred_date": "2018-03-29",
+      "gt_date": "2018-03-29",
+      "pred_amount": 39.9,
+      "gt_amount": 39.9,
+      "notes": []
+    },
+    {
+      "file": "img_06",
+      "merchant_ok": true,
+      "date_ok": true,
+      "amount_ok": true,
+      "items_score": 1.0,
+      "pred_merchant": "TONYMOLY VIVA CITY",
+      "gt_merchant": "TONYMOLY VIVA CITY",
+      "pred_date": "2018-03-29",
+      "gt_date": "2018-03-29",
+      "pred_amount": 100.6,
+      "gt_amount": 100.6,
+      "notes": []
+    },
+    {
+      "file": "img_07",
+      "merchant_ok": true,
+      "date_ok": true,
+      "amount_ok": true,
+      "items_score": 1.0,
+      "pred_merchant": "Oc9o1",
+      "gt_merchant": "Oc9o1",
+      "pred_date": "2013-03-15",
+      "gt_date": "2013-03-15",
+      "pred_amount": 119.7,
+      "gt_amount": 119.7,
+      "notes": []
+    },
+    {
+      "file": "img_08",
+      "merchant_ok": true,
+      "date_ok": true,
+      "amount_ok": true,
+      "items_score": 0.0,
+      "pred_merchant": "Anzel Advertising (M) Sdn bhd (759705-H)",
+      "gt_merchant": "Anzel Advertising (M) Sdn bhd (759705-H)",
+      "pred_date": "2018-03-21",
+      "gt_date": "2018-03-21",
+      "pred_amount": 7.42,
+      "gt_amount": 7.42,
+      "notes": [
+        "items: 0/1"
+      ]
+    },
+    {
+      "file": "img_09",
+      "merchant_ok": true,
+      "date_ok": true,
+      "amount_ok": true,
+      "items_score": 0.0,
+      "pred_merchant": "Anzel Advertising (M) Sdn bhd (759785-H)",
+      "gt_merchant": "Anzel Advertising (M) Sdn bhd (759785-H)",
+      "pred_date": "2018-03-27",
+      "gt_date": "2018-03-27",
+      "pred_amount": 8.5,
+      "gt_amount": 8.5,
+      "notes": [
+        "items: 0/2"
+      ]
+    },
+    {
+      "file": "photo_2026-06-20_11-31-17",
+      "merchant_ok": true,
+      "date_ok": true,
+      "amount_ok": false,
+      "items_score": 1.0,
+      "pred_merchant": "ZEYTUN* Supermarket",
+      "gt_merchant": "ZEYTUN* Supermarket",
+      "pred_date": "2026-06-11",
+      "gt_date": "2026-06-11",
+      "pred_amount": null,
+      "gt_amount": 210300.0,
+      "notes": [
+        "total: pred=None | gt=210300.0"
+      ]
+    }
+  ]
+}

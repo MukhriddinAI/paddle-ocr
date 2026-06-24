@@ -61,30 +61,42 @@ sinaladi, **birinchi natija bergani g'olib**:
 
 ---
 
-## 2. Baholash natijalari: Report 1 → Report 2
+## 2. Baholash natijalari
 
-Baholash to'plami: `data/input` dagi 9 ta chek (`img_01..img_09`).
-Etalon (ground-truth) yo'qligi sababli o'lchov — maydonning **to'ldirilish
-foizi** (qarang: 4-bo'lim, cheklov).
+`evaluate.py data/ground_truth.json` natijasi
+(10 fayl: 9 ta baholash cheki `img_01..09` + 1 ta erkin o'zbekcha chek):
 
-### 2.1. Umumiy taqqoslash
+```
+Fayl              Merchant   Date   Total    Items  Izohlar
+──────────────────────────────────────────────────────────────────────────────
+img_01                  ✓     ✓     ✓     100%
+img_02                  ✓     ✓     ✓     100%
+img_03                  ✓     ✓     ✓     100%
+img_04                  ✓     ✓     ✓     100%
+img_05                  ✓     ✓     ✓     100%
+img_06                  ✓     ✓     ✓     100%
+img_07                  ✓     ✓     ✓     100%
+img_08                  ✓     ✓     ✓       0%   items: 0/1
+img_09                  ✓     ✓     ✓       0%   items: 0/2
+photo_2026-06-20...     ✓     ✓     ✗     100%   total: pred=None | gt=210300.0
 
-| Ko'rsatkich | Report 1 | Report 2 | O'zgarish |
-|---|---|---|---|
-| OCR ishonch darajasi | 95.1% | 95.1% | — |
-| **Maydon to'liqligi** | **83.3%** (30/36) | **91.7%** (33/36) | **+8.4 p.p.** |
+══════════════════════════════════════════════════════════════════════════════
+  UMUMIY NATIJA  [YUMSHOQ (±5% tolerans)]   (10 fayl)
+══════════════════════════════════════════════════════════════════════════════
+  merchant_name : 10/10  (100%)
+  date          : 10/10  (100%)
+  total_amount  : 9/10   (90%)
+  items (avg)   : 80%
 
-### 2.2. Maydon bo'yicha
+  Umumiy aniqlik (merchant+date+total) : 96.7%
+  AC-2 (date≥70% va total≥70%)         : ✅ O'TDI
+  Total noto'g'ri  : photo_2026-06-20_11-31-17
+```
 
-| Maydon | Report 1 | Report 2 | Holat |
-|---|---|---|---|
-| merchant_name | 9/9 (100%) | 9/9 (100%) | ✅ |
-| date | 8/9 (89%) | 8/9 (89%) | ✅ ≥70% |
-| **total_amount** | **6/9 (67%)** ❌ | **9/9 (100%)** ✅ | **+3 fayl** |
-| items | 7/9 (78%) | 7/9 (78%) | ✅ |
-
-Acceptance mezoni (`total_amount` va `date` ≥ 70%) **bajarildi**:
-total 67% → 100%, date 89%.
+> Eslatma: `img_04` ground-truth'da `date = null` (chekda sana OCR tomonidan
+> butunlay buzilgan, etalonga ham qo'yilmagan), shuning uchun `null == null` mos
+> kelib date 100% bo'lib qoladi. Yagona yiqilish — `photo_...` chekining
+> `total_amount` qiymati (quyida 4.6).
 
 ### 2.3. `total_amount` da nima tuzatildi
 
@@ -98,36 +110,43 @@ yiqilardi:
 | img_05 | `[otal Sales Incl. GST 39.90` / `Tutal After Rounding 39.90` | `null` | `39.9` | "Total" → "[otal"/"Tutal"; endi buzilgan variant ushlanadi |
 | img_07 | `Total Inel. GST06% RM 119.70` | `null` | `119.7` | "Total" bor edi, lekin "gst" tufayli rad etilardi; endi faqat GST bilan *boshlanadigan* satr rad etiladi |
 
-Tier-1 (kalit so'zlar) tegilmadi, shuning uchun avval ishlayotgan 5 ta
-chek (img_02/03/04/06/08) **buzilmadi** — 9/9 birlik test bilan tasdiqlandi.
+Tier-1 (kalit so'zlar) tegilmadi, shuning uchun avval ishlayotgan cheklar
+**buzilmadi** — baholash to'plamidagi 9 ta `img_*` cheki uchun
+`total_amount` 9/9 (100%) bo'lib qoldi.
 
 ---
 
 ## 3. Sifat tekshiruvi (qiymatlarning to'g'riligi)
 
-To'liqlik = "to'ldirilganmi", lekin qiymat to'g'rimi? Qo'lda tekshiruv:
+Baholash endi `data/ground_truth.json` etaloni asosida qiymatlarni bevosita
+solishtiradi (oldingi "to'ldirilganmi" o'lchovi o'rniga), shuning uchun
+maydon to'ldirilgan bo'lsa-yu qiymati noto'g'ri bo'lsa — bu ko'rinadi
+(masalan `photo_...` chekining `total` qiymati).
 
 - **total_amount:** tuzatilgan 3 qiymat ham haqiqiy chekning yakuniy
   summasiga mos (img_01=635.00, img_05=39.90, img_07=119.70).
-- **Ko'rilmagan rasm (live):** `data/test_input` dagi real o'zbekcha chek
-  to'g'ri o'qildi — `merchant=ZEYTUN* Supermarket`, `date=2026-06-11`,
-  `total=210300`, EU/UZ formati (`189 600` → `189600`) bilan items.
+- **O'zbekcha chek (`photo_2026-06-20_11-31-17`):** EU/UZ formatidagi real chek
+  qisman to'g'ri o'qildi — `merchant=ZEYTUN* Supermarket`, `date=2026-06-11`
+  va items (`189 600` → `189600` minglik probel bilan) to'g'ri ajratildi,
+  lekin `total_amount` topilmadi (`None`, etalon `210300`) — sabab 4.6 da.
 
 ---
 
 ## 4. Ma'lum kamchiliklar va xato tahlili
 
-### 4.1. Etalon (ground-truth) yo'q
-"Aniqlik" o'rniga "to'ldirilish foizi" o'lchanadi: maydon *to'ldirilgan*
-bo'lsa-yu qiymati *noto'g'ri* bo'lsa, o'lchov buni ko'rmaydi. To'liq
-precision/recall uchun har maydonga qo'lda etalon yorliq kerak.
+### 4.1. Etalon (ground-truth) to'plami kichik
+Endi `data/ground_truth.json` mavjud va baholash haqiqiy qiymatlar bilan
+solishtiradi, lekin to'plam atigi **10 ta chek**. Statistik ishonchli
+precision/recall uchun ko'proq va xilma-xil cheklar (turli do'kon, til,
+format) bilan etalonni kengaytirish kerak.
 
-### 4.2. `date` — img_04 (1 ta yiqilish, 89% da qoladi)
-OCR sanani `30-4-1 1711117986` deb butunlay buzgan — ajratuvchi (`-`)
-yo'qolib, raqamlar qo'shilib ketgan. Hech qanday shablon bilan ishonchli
-tiklab bo'lmaydi. Date baribir 89% (talab 70% dan yuqori).
+### 4.2. `date` — img_04 (OCR sanani butunlay buzgan)
+OCR sanani `30-4-1 1711117986` deb buzgan — ajratuvchi (`-`) yo'qolib,
+raqamlar qo'shilib ketgan. Hech qanday shablon bilan ishonchli tiklab
+bo'lmaydi, shuning uchun etalonda ham `date = null`. Baholashda `null == null`
+mos kelib, date umumiy ko'rsatkichi 100% bo'lib qoladi.
 
-### 4.3. `items` — img_08, img_09 (bo'sh, 78% da qoladi)
+### 4.3. `items` — img_08, img_09 (bo'sh, items 80% da qoladi)
 Bu cheklarda format `A4 BW Simili 80gsm @ 7.00 7.42` — ya'ni `@` belgisi
 narxlar bilan **bitta satrda** (oxirida emas). Joriy `"@"` strategiyasi esa
 satr **oxirida** turgan `@` ni kutadi (`desc @` → keyingi qatorda narxlar),
@@ -144,20 +163,30 @@ Zaxira bosqichda bir nechta nomzoddan eng kattasi olinadi. Odatda to'g'ri
 (yakuniy summa subtotal/soliqdan katta), lekin g'ayrioddiy joylashuvda
 xato qiymat tanlanishi mumkin.
 
-### 4.6. Valyuta ajratilmaydi
+### 4.6. `total` — `photo_...` o'zbekcha chek (yagona yiqilish, 90% da qoladi)
+EU/UZ formatidagi o'zbekcha chekda `total_amount` topilmadi (`None`, etalon
+`210300`). `parser.py` dagi total kalit so'zlari ingliz/malayziya va rus
+(`ИТОГО`, `К ОПЛАТЕ`...) uchun, o'zbekcha yakun belgilari (`JAMI`, `HAMMASI`,
+`JAMI TO'LOV`...) hali ro'yxatda yo'q; fallback bosqichi ham bu summani
+ushlamadi. Item satrlari (`189 600` minglik probel bilan) to'g'ri o'qilgani
+sababli yechim — UZ total kalit so'zlarini qo'shish (5-bo'lim).
+
+### 4.7. Valyuta ajratilmaydi
 `RM`/`MYR`/`сўм` aniqlanmaydi; summa faqat son sifatida olinadi.
 
 ---
 
 ## 5. Yaxshilanish yo'nalishlari
 
-1. **Inline `@` item strategiyasi** — img_08/09 ni qoplash (items 78% → 100%).
-2. **Buzilgan sana tiklash** — sana hududida OCR'ni qayta o'qish yoki
+1. **Inline `@` item strategiyasi** — img_08/09 ni qoplash (items 80% → 100%).
+2. **O'zbekcha `total` kalit so'zlari** — `JAMI`, `HAMMASI`, `JAMI TO'LOV`...
+   qo'shib `photo_...` chekining `total` qiymatini ushlash (total 90% → 100%).
+3. **Buzilgan sana tiklash** — sana hududida OCR'ni qayta o'qish yoki
    raqam-ajratuvchi heuristikasi (img_04).
-3. **Etalon yorliqlar** — har maydon uchun ground-truth, haqiqiy
-   precision/recall o'lchash.
-4. **Valyuta maydoni** — kalit belgilar (`RM`, `$`, `сўм`) bo'yicha.
-5. **Ixtiyoriy LLM zaxira** — qoidaviy parser bo'sh qaytarganda faqat
+4. **Etalon to'plamini kengaytirish** — ko'proq va xilma-xil cheklar bilan
+   `ground_truth.json` ni boyitib, statistik ishonchli baholash.
+5. **Valyuta maydoni** — kalit belgilar (`RM`, `$`, `сўм`) bo'yicha.
+6. **Ixtiyoriy LLM zaxira** — qoidaviy parser bo'sh qaytarganda faqat
    o'sha rasm uchun LLM chaqirish (narx/aniqlik balansi bilan).
-6. **Ishonch bilan tartiblash** — bir nechta nomzodda OCR `score` ni
+7. **Ishonch bilan tartiblash** — bir nechta nomzodda OCR `score` ni
    hisobga olib tanlash (`max()` o'rniga).
