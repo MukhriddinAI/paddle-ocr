@@ -24,8 +24,8 @@ for _stream in (sys.stdout, sys.stderr):
 from src.ocr_engine import OcrEngine
 from src.pipeline import process_folder, process_image
 
-DEFAULT_INPUT = os.path.join("data", "test_input")
-DEFAULT_OUTPUT = os.path.join("data", "output", "PaddleOCR")
+DEFAULT_INPUT = os.path.join("data", "input")
+DEFAULT_OUTPUT = os.path.join("data", "output")
 
 
 def main() -> int:

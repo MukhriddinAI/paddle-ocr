@@ -1,0 +1,20 @@
+{
+  "merchant_name": "MR. D.I.Y. (M) SDN BHD",
+  "date": null,
+  "total_amount": 5.0,
+  "items": [
+    {
+      "description": "WA26 - 12/144 LAVA FO0D CONTAINER FC202 500ml *S",
+      "quantity": 1.0,
+      "unit_price": 1.8,
+      "price": 1.8
+    },
+    {
+      "description": "LAVA CANISTER CST7700 530ml WA33 - 12/144 *S",
+      "quantity": 2.0,
+      "unit_price": 1.6,
+      "price": 3.2
+    }
+  ],
+  "source_file": "img_04.jpg"
+}

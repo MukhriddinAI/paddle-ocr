@@ -1,0 +1,20 @@
+{
+  "merchant_name": "ZEYTUN* Supermarket",
+  "date": "2026-06-11",
+  "total_amount": null,
+  "items": [
+    {
+      "description": "LI 9 PULTLIK KATTA",
+      "quantity": 0.0,
+      "unit_price": 189600.0,
+      "price": 189600.0
+    },
+    {
+      "description": "TOP ARZON",
+      "quantity": 1.0,
+      "unit_price": 20700.0,
+      "price": 20700.0
+    }
+  ],
+  "source_file": "photo_2026-06-20_11-31-17.jpg"
+}
