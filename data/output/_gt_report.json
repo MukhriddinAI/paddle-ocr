@@ -1,6 +1,6 @@
 {
   "summary": {
-    "mode": "YUMSHOQ (±5% tolerans)",
+    "mode": "LENIENT (±5% tolerance)",
     "files": 10,
     "merchant_pct": 100.0,
     "date_pct": 100.0,

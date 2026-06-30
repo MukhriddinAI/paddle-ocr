@@ -1,12 +1,12 @@
-"""Natijalarni ground-truth bilan solishtirish.
+"""Compare results against the ground truth.
 
-Ishlatish:
+Usage:
     python evaluate.py data/ground_truth.json
     python evaluate.py data/ground_truth.json --output_dir data/output
     python evaluate.py data/ground_truth.json --strict
     python evaluate.py data/ground_truth.json --save_report
 
-ground_truth.json formati (sizning formatda):
+ground_truth.json format (your format):
 {
   "samples": [
     {
@@ -22,11 +22,11 @@ ground_truth.json formati (sizning formatda):
   ]
 }
 
-Baholar:
-  - merchant_name : partial match (--strict bo'lmasa 60% so'z mos kelsa OK)
-  - date          : YYYY-MM-DD normallanib solishtiriladi
-  - total_amount  : +-5% tolerans (--strict: +-0%)
-  - items         : GT items'larining necha foizi predda topilgani
+Scoring:
+  - merchant_name : partial match (without --strict, OK if 50% of words match)
+  - date          : compared after normalizing to YYYY-MM-DD
+  - total_amount  : +-5% tolerance (--strict: +-0%)
+  - items         : what percentage of the GT items were found in the prediction
 """
 
 from __future__ import annotations
@@ -49,7 +49,7 @@ DEFAULT_OUTPUT_DIR = os.path.join("data", "output")
 AMOUNT_TOLERANCE   = 0.05
 
 
-# ─────────────────────────── yordamchi funksiyalar ───────────────────────────
+# ─────────────────────────── helper functions ────────────────────────────────
 
 def normalize_date(raw: str | None) -> str | None:
     if not raw:
@@ -79,7 +79,7 @@ def normalize_amount(val: Any) -> float | None:
 
 
 def clean_word(w: str) -> str:
-    """Punktuatsiya va qavslarni olib, faqat harf-raqam qoldiradi."""
+    """Strip punctuation and brackets, keeping only alphanumerics."""
     return re.sub(r"[^A-Z0-9]", "", w.upper())
 
 
@@ -90,7 +90,7 @@ def match_merchant(pred: str | None, gt: str | None, strict: bool) -> bool:
         return False
     if strict:
         return pred.strip().upper() == gt.strip().upper()
-    # Punktuatsiyasiz so'zlarni ajratish (uzunligi >= 3)
+    # Split into punctuation-free words (length >= 3)
     gt_words   = [clean_word(w) for w in gt.split()]
     gt_words   = [w for w in gt_words if len(w) >= 3]
     pred_clean = clean_word(pred)
@@ -103,7 +103,7 @@ def match_merchant(pred: str | None, gt: str | None, strict: bool) -> bool:
 def match_amount(pred: Any, gt: Any, strict: bool) -> bool:
     pf, gf = normalize_amount(pred), normalize_amount(gt)
     if gf is None:
-        return True   # GT yo'q — baholanmaydi
+        return True   # no GT — not evaluated
     if pf is None:
         return False
     if strict:
@@ -122,13 +122,13 @@ def match_date(pred: str | None, gt: str | None) -> bool:
 
 
 def match_items(pred_items: list | None, gt_items: list | None, strict: bool) -> float:
-    """GT items'larining qanchasi predda topilgani (0.0..1.0)."""
+    """What fraction of the GT items were found in the prediction (0.0..1.0)."""
     if not gt_items:
         return 1.0
     if not pred_items:
         return 0.0
 
-    # Pred nomlarini to'pla
+    # Collect the predicted names
     pred_names = []
     for it in pred_items:
         if isinstance(it, dict):
@@ -151,7 +151,7 @@ def match_items(pred_items: list | None, gt_items: list | None, strict: bool) ->
             if any(gt_name.strip().upper() == p.strip().upper() for p in pred_names):
                 found += 1
         else:
-            # Birinchi muhim so'z predda bormi?
+            # Is the first significant word present in the prediction?
             words = [w for w in gt_name.upper().split() if len(w) > 2]
             if words and words[0] in pred_blob:
                 found += 1
@@ -160,7 +160,7 @@ def match_items(pred_items: list | None, gt_items: list | None, strict: bool) ->
     return found / len(gt_items)
 
 
-# ────────────────────────────── natija klassi ─────────────────────────────────
+# ────────────────────────────── result class ─────────────────────────────────
 
 @dataclass
 class FileResult:
@@ -173,7 +173,7 @@ class FileResult:
     json_missing: bool = False
     notes: list[str] = dc_field(default_factory=list)
 
-    # raw qiymatlar (izoh uchun)
+    # raw values (for notes)
     pred_merchant: str | None = None
     gt_merchant:   str | None = None
     pred_date:     str | None = None
@@ -182,12 +182,12 @@ class FileResult:
     gt_amount:     Any        = None
 
 
-# ────────────────────────────── baholash ─────────────────────────────────────
+# ────────────────────────────── evaluation ───────────────────────────────────
 
 def evaluate_file(fname, pred, gt, strict) -> FileResult:
     r = FileResult(fname=fname)
 
-    # Qiymatlarni saqlash
+    # Save the values
     r.pred_merchant = pred.get("merchant_name")
     r.gt_merchant   = gt.get("merchant_name")
     r.pred_date     = pred.get("date")
@@ -216,7 +216,7 @@ def evaluate_file(fname, pred, gt, strict) -> FileResult:
     return r
 
 
-# ────────────────────────────── chiqarish ────────────────────────────────────
+# ────────────────────────────── output ───────────────────────────────────────
 
 def mark(v):
     if v is None: return "  —"
@@ -224,14 +224,14 @@ def mark(v):
 
 
 def print_table(results: list[FileResult]) -> None:
-    print(f"\n{'Fayl':<16}{'Merchant':>10}{'Date':>7}{'Total':>8}{'Items':>9}  Izohlar")
+    print(f"\n{'File':<16}{'Merchant':>10}{'Date':>7}{'Total':>8}{'Items':>9}  Notes")
     print("─" * 90)
     for r in results:
         if r.json_missing:
-            print(f"{r.fname:<16}  ⚠  JSON fayl topilmadi")
+            print(f"{r.fname:<16}  ⚠  JSON file not found")
             continue
         if r.gt_missing:
-            print(f"{r.fname:<16}  ⚠  GT yozuvi topilmadi")
+            print(f"{r.fname:<16}  ⚠  GT entry not found")
             continue
         items_s = f"{r.items_score*100:>6.0f}%" if r.items_score is not None else "     —"
         note = " | ".join(r.notes[:2])
@@ -242,7 +242,7 @@ def print_summary(results: list[FileResult], strict: bool) -> dict:
     valid = [r for r in results if not r.gt_missing and not r.json_missing]
     n = len(valid)
     if n == 0:
-        print("\nHech qanday baholanadigan fayl topilmadi.")
+        print("\nNo files to evaluate were found.")
         return {}
 
     m_ok = sum(1 for r in valid if r.merchant_ok)
@@ -253,28 +253,28 @@ def print_summary(results: list[FileResult], strict: bool) -> dict:
 
     def pct(k): return k / n * 100
 
-    mode = "STRICT (±0%)" if strict else "YUMSHOQ (±5% tolerans)"
+    mode = "STRICT (±0%)" if strict else "LENIENT (±5% tolerance)"
     print()
     print("═" * 90)
-    print(f"  UMUMIY NATIJA  [{mode}]   ({n} fayl)")
+    print(f"  OVERALL RESULT  [{mode}]   ({n} files)")
     print("═" * 90)
     print(f"  merchant_name : {m_ok}/{n}  ({pct(m_ok):.0f}%)")
     print(f"  date          : {d_ok}/{n}  ({pct(d_ok):.0f}%)")
     print(f"  total_amount  : {a_ok}/{n}  ({pct(a_ok):.0f}%)")
     print(f"  items (avg)   : {i_avg*100:.0f}%")
     overall = (m_ok + d_ok + a_ok) / (3 * n) * 100
-    print(f"\n  Umumiy aniqlik (merchant+date+total) : {overall:.1f}%")
+    print(f"\n  Overall accuracy (merchant+date+total) : {overall:.1f}%")
 
     ac2 = pct(d_ok) >= 70 and pct(a_ok) >= 70
-    print(f"  AC-2 (date≥70% va total≥70%)         : {'✅ O\'TDI' if ac2 else '❌ O\'TMADI'}")
+    print(f"  AC-2 (date≥70% and total≥70%)          : {'✅ PASSED' if ac2 else '❌ FAILED'}")
 
-    # Noto'g'rilar ro'yxati
+    # List of incorrect ones
     wrong_date   = [r.fname for r in valid if not r.date_ok]
     wrong_amount = [r.fname for r in valid if not r.amount_ok]
     if wrong_date:
-        print(f"\n  Date noto'g'ri   : {', '.join(wrong_date)}")
+        print(f"\n  Date incorrect   : {', '.join(wrong_date)}")
     if wrong_amount:
-        print(f"  Total noto'g'ri  : {', '.join(wrong_amount)}")
+        print(f"  Total incorrect  : {', '.join(wrong_amount)}")
 
     return {
         "mode": mode, "files": n,
@@ -291,34 +291,34 @@ def print_summary(results: list[FileResult], strict: bool) -> dict:
 
 def main() -> int:
     ap = argparse.ArgumentParser(
-        description="Pipeline natijalarini ground-truth bilan solishtiradi.",
+        description="Compares pipeline results against the ground truth.",
         epilog=(
-            "Misol:\n"
+            "Example:\n"
             "  python evaluate.py data/ground_truth.json\n"
             "  python evaluate.py data/ground_truth.json --strict\n"
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     ap.add_argument("ground_truth",
-                    help="ground_truth.json fayl yo'li")
+                    help="path to the ground_truth.json file")
     ap.add_argument("--output_dir", "-o", default=DEFAULT_OUTPUT_DIR,
-                    help=f"Pipeline JSON natijalari papkasi (default: {DEFAULT_OUTPUT_DIR})")
+                    help=f"folder with the pipeline JSON results (default: {DEFAULT_OUTPUT_DIR})")
     ap.add_argument("--strict", "-s", action="store_true",
-                    help="Qat'iy rejim: ±0%% tolerans, aniq merchant nomi")
+                    help="Strict mode: ±0%% tolerance, exact merchant name")
     ap.add_argument("--save_report", "-r", action="store_true",
-                    help="Hisobotni _gt_report.json ga saqlash")
+                    help="Save the report to _gt_report.json")
     args = ap.parse_args()
 
-    # ── Ground truth yuklash ──────────────────────────────────────────────────
+    # ── Load ground truth ─────────────────────────────────────────────────────
     if not os.path.exists(args.ground_truth):
-        print(f"XATO: ground_truth topilmadi: {args.ground_truth}", file=sys.stderr)
+        print(f"ERROR: ground_truth not found: {args.ground_truth}", file=sys.stderr)
         return 1
 
     with open(args.ground_truth, encoding="utf-8") as fh:
         raw_gt = json.load(fh)
 
-    # Ikki formatni qo'llab-quvvatlash:
-    #   Format A: {"samples": [...]}   ← sizning formatIngiz
+    # Support two formats:
+    #   Format A: {"samples": [...]}   ← your format
     #   Format B: {"img_01": {...}, "img_02": {...}}
     if "samples" in raw_gt and isinstance(raw_gt["samples"], list):
         gt_map: dict[str, dict] = {}
@@ -329,9 +329,9 @@ def main() -> int:
     else:
         gt_map = {k: v for k, v in raw_gt.items() if not k.startswith("_")}
 
-    # ── Output papkadan pred JSON fayllarini yig'ish ──────────────────────────
+    # ── Collect the predicted JSON files from the output folder ───────────────
     if not os.path.isdir(args.output_dir):
-        print(f"XATO: output papka topilmadi: {args.output_dir}", file=sys.stderr)
+        print(f"ERROR: output folder not found: {args.output_dir}", file=sys.stderr)
         return 1
 
     pred_map: dict[str, str] = {
@@ -340,7 +340,7 @@ def main() -> int:
         if f.endswith(".json") and not f.startswith("_")
     }
 
-    # ── Barcha kalitlar uchun baholash ────────────────────────────────────────
+    # ── Evaluate for all keys ─────────────────────────────────────────────────
     all_keys = sorted(set(gt_map) | set(pred_map))
     results: list[FileResult] = []
 
@@ -365,11 +365,11 @@ def main() -> int:
 
         results.append(evaluate_file(key, pred, gt_map[key], args.strict))
 
-    # ── Chiqarish ─────────────────────────────────────────────────────────────
+    # ── Output ────────────────────────────────────────────────────────────────
     print_table(results)
     summary = print_summary(results, args.strict)
 
-    # ── Hisobot saqlash ───────────────────────────────────────────────────────
+    # ── Save the report ───────────────────────────────────────────────────────
     if args.save_report and summary:
         report_path = os.path.join(args.output_dir, "_gt_report.json")
         with open(report_path, "w", encoding="utf-8") as fh:
@@ -393,7 +393,7 @@ def main() -> int:
                     for r in results
                 ],
             }, fh, ensure_ascii=False, indent=2)
-        print(f"\n  Hisobot saqlandi: {report_path}")
+        print(f"\n  Report saved: {report_path}")
 
     return 0
 

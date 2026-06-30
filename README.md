@@ -159,20 +159,16 @@ On the current evaluation set (`data/ground_truth.json`, 10 files):
 
 ```
 ══════════════════════════════════════════════════════════════════════════════════════════
-  UMUMIY NATIJA  [YUMSHOQ (±5% tolerans)]   (10 fayl)
+  OVERALL RESULT  [LENIENT (±5% tolerance)]   (10 files)
 ══════════════════════════════════════════════════════════════════════════════════════════
   merchant_name : 10/10  (100%)
   date          : 10/10  (100%)
-  total_amount  : 9/10   (90%)
+  total_amount  : 9/10  (90%)
   items (avg)   : 80%
 
-  Umumiy aniqlik (merchant+date+total) : 96.7%
-  AC-2 (date≥70% va total≥70%)         : ✅ O'TDI
+  Overall accuracy (merchant+date+total) : 96.7%
+  AC-2 (date≥70% and total≥70%)          : ✅ PASSED
 ```
-
-> The block above is the verbatim console output of `evaluate.py` (the tool
-> prints in Uzbek): `UMUMIY NATIJA` = OVERALL RESULT, `YUMSHOQ` = LENIENT,
-> `fayl` = file(s), `Umumiy aniqlik` = overall accuracy, `O'TDI` = PASSED.
 
 Detailed analysis and error breakdown — [`RESULTS.md`](RESULTS.md).
 

@@ -68,7 +68,7 @@ Output of `evaluate.py data/ground_truth.json`
 (10 files: 9 evaluation receipts `img_01..09` + 1 free-form Uzbek receipt):
 
 ```
-Fayl              Merchant   Date   Total    Items  Izohlar
+File              Merchant   Date   Total    Items  Notes
 ──────────────────────────────────────────────────────────────────────────────
 img_01                  ✓     ✓     ✓     100%
 img_02                  ✓     ✓     ✓     100%
@@ -82,23 +82,22 @@ img_09                  ✓     ✓     ✓       0%   items: 0/2
 photo_2026-06-20...     ✓     ✓     ✗     100%   total: pred=None | gt=210300.0
 
 ══════════════════════════════════════════════════════════════════════════════
-  UMUMIY NATIJA  [YUMSHOQ (±5% tolerans)]   (10 fayl)
+  OVERALL RESULT  [LENIENT (±5% tolerance)]   (10 files)
 ══════════════════════════════════════════════════════════════════════════════
   merchant_name : 10/10  (100%)
   date          : 10/10  (100%)
-  total_amount  : 9/10   (90%)
+  total_amount  : 9/10  (90%)
   items (avg)   : 80%
 
-  Umumiy aniqlik (merchant+date+total) : 96.7%
-  AC-2 (date≥70% va total≥70%)         : ✅ O'TDI
-  Total noto'g'ri  : photo_2026-06-20_11-31-17
+  Overall accuracy (merchant+date+total) : 96.7%
+  AC-2 (date≥70% and total≥70%)          : ✅ PASSED
+  Total incorrect  : photo_2026-06-20_11-31-17
 ```
 
-> The block above is the verbatim console output of `evaluate.py` (the tool
-> prints in Uzbek): `Fayl` = File, `Izohlar` = Notes, `UMUMIY NATIJA` =
-> OVERALL RESULT, `YUMSHOQ` = LENIENT, `fayl` = file(s),
-> `Umumiy aniqlik` = overall accuracy, `O'TDI` = PASSED,
-> `Total noto'g'ri` = Total incorrect.
+> Note: in the ground truth `img_04` has `date = null` (the date was
+> completely garbled by OCR on the receipt and was not set in the reference
+> either), so `null == null` matches and the date stays at 100%. The only
+> failure is the `total_amount` value of the `photo_...` receipt (4.6 below).
 
 ### 2.3. What was fixed in `total_amount`
 
