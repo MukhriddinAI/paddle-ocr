@@ -28,7 +28,7 @@ PaddleOCR/
 │   ├── pipeline.py         # orchestration: image -> OCR -> parser -> JSON
 │   └── config.py           # OCR language and row-grouping settings
 └── data/
-    ├── input/              # evaluation set (img_01..img_09)
+    ├── input/              # evaluation set (img_01..img_09) # put images into this folder
     ├── test_input/         # free-form test images (photo_2026-...)
     ├── ground_truth.json   # manually labeled correct answers (for evaluation)
     └── output/             # result JSON files + _gt_report.json
