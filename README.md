@@ -182,7 +182,7 @@ and rules** — offline, reproducible, with no LLM calls.
 **During development:** an AI assistant (Claude Code — an LLM-based coding
 agent) was used for:
 
-- designing the module structure (`ocr_engine` / `parser` / `pipeline` /
+- choosing the design of the module structure (`ocr_engine` / `parser` / `pipeline` /
   `models`);
 - writing and iterating on the regex patterns and heuristics;
 - analyzing the raw OCR text to debug extraction errors (e.g. hardening the
